@@ -1,0 +1,330 @@
+//
+//  SettingPrinterVC.m
+//  StoreOrder
+//
+//  Created by WJ on 16/8/30.
+//  Copyright © 2016年 WJ. All rights reserved.
+//
+
+#import "SettingPrinterVC.h"
+#import "PrinterHelp.h"
+#import "PrinterList.h"
+
+extern CBPeripheral *activeDevice;
+
+@interface SettingPrinterVC ()
+
+@property (nonatomic, strong) UIView *viewFirst;
+@property (nonatomic, strong) UILabel *lbPrinterName;
+
+@property (nonatomic, strong) UIView *viewSecond;
+@property (nonatomic, strong) UILabel *lbCount;
+
+@property (nonatomic, strong) UIView *viewThird;
+
+@property (nonatomic, strong) UIButton *btnTest;
+@property (nonatomic, strong) AppDelegate *app;
+
+
+@end
+
+@implementation SettingPrinterVC
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.title = @"打印设置";
+    [self setNavItem];
+    [self initSubViews];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    NSLog(@"%@",[USER_DEFAULT objectForKey:POSNAME]);
+    if (activeDevice && self.app.openBlueTooth) {
+//        self.lbPrinterName.text = activeDevice.name;
+        self.lbPrinterName.text = [USER_DEFAULT objectForKey:POSNAME];
+    }else{
+        self.lbPrinterName.text = @"未连接";
+    }
+}
+
+- (void)setNavItem{
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemBackButtonWithTarget:self action:@selector(clickNavItem)];
+}
+
+- (void)clickNavItem{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)initSubViews{
+    if (!self.viewFirst) {
+        self.viewFirst = [UIView new];
+        [self.view addSubview:self.viewFirst];
+        [self.viewFirst remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.top.right.equalTo(self.view);
+            make.height.equalTo(50);
+        }];
+        
+        UIImageView *iv1 = [UIImageView new];
+        [self.viewFirst addSubview:iv1];
+        [iv1 remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(15);
+            make.centerY.equalTo(self.viewFirst.centerY);
+            make.left.equalTo(self.viewFirst.left).offset(10);
+        }];
+        [iv1 setImage:[UIImage imageNamed:@"蓝牙-(1)"]];
+        
+        UILabel *lbTitle = [UILabel new];
+        [self.viewFirst addSubview:lbTitle];
+        [lbTitle remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(iv1.right).offset(10);
+            make.centerY.equalTo(iv1.centerY);
+            make.width.greaterThanOrEqualTo(20);
+            make.height.equalTo(20);
+        }];
+        lbTitle.textColor = [UIColor colorFromString:@"#333"];
+        lbTitle.text = @"蓝牙打印机";
+        lbTitle.font = [UIFont systemFontOfSize:14.0];
+        
+        UIImageView *ivRight = [UIImageView new];
+        [self.viewFirst addSubview:ivRight];
+        [ivRight remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(16);
+            make.centerY.equalTo(self.viewFirst.centerY);
+            make.right.equalTo(self.viewFirst.right).offset(-20);
+        }];
+        [ivRight setImage:[UIImage imageNamed:@"icon_cell_right_arrow"]];
+        
+        self.lbPrinterName = [UILabel new];
+        [self.viewFirst addSubview:self.lbPrinterName];
+        [self.lbPrinterName remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(ivRight.left).offset(-10);
+            make.centerY.equalTo(iv1.centerY);
+            make.width.greaterThanOrEqualTo(20);
+            make.height.equalTo(20);
+        }];
+        self.lbPrinterName.textColor = [UIColor colorFromString:@"#999"];
+        
+        if (activeDevice && self.app.openBlueTooth) {
+             self.lbPrinterName.text = activeDevice.name;
+        }else{
+            self.lbPrinterName.text = @"未连接";
+        }
+        
+       
+        self.lbPrinterName.font = [UIFont systemFontOfSize:12.0];
+        
+        UIImageView *ivLine = [UIImageView new];
+        [self.viewFirst addSubview:ivLine];
+        [ivLine remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.viewFirst.left).offset(10);
+            make.right.equalTo(self.viewFirst.right).offset(-10);
+            make.height.equalTo(1);
+            make.bottom.equalTo(self.viewFirst.bottom);
+        }];
+        ivLine.image = [UIImage imageNamed:@"横线"];
+        
+        UIButton *btnCoverFirst = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.viewFirst addSubview:btnCoverFirst];
+        [btnCoverFirst remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.top.bottom.equalTo(self.viewFirst);
+        }];
+        btnCoverFirst.tag = 0;
+        [btnCoverFirst addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    if (!self.viewSecond) {
+        self.viewSecond = [UIView new];
+        [self.view addSubview:self.viewSecond];
+        [self.viewSecond remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(self.view);
+            make.height.equalTo(50);
+            make.top.equalTo(self.viewFirst.bottom);
+        }];
+
+        UIImageView *iv = [UIImageView new];
+        [self.viewSecond addSubview:iv];
+        [iv remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(15);
+            make.centerY.equalTo(self.viewSecond.centerY);
+            make.left.equalTo(self.viewSecond.left).offset(10);
+        }];
+        [iv setImage:[UIImage imageNamed:@"购票数量"]];
+
+        UILabel *lbTitle = [UILabel new];
+        [self.viewSecond addSubview:lbTitle];
+        [lbTitle remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(iv.right).offset(10);
+            make.centerY.equalTo(iv.centerY);
+            make.width.greaterThanOrEqualTo(20);
+            make.height.equalTo(20);
+        }];
+        lbTitle.textColor = [UIColor colorFromString:@"#333"];
+        lbTitle.text = @"小票打印联数";
+        lbTitle.font = [UIFont systemFontOfSize:14.0];
+        
+        UIImageView *ivRight = [UIImageView new];
+        [self.viewSecond addSubview:ivRight];
+        [ivRight remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.equalTo(100);
+            make.height.equalTo(30);
+            make.centerY.equalTo(self.viewSecond.centerY);
+            make.right.equalTo(self.viewSecond.right).offset(-20);
+        }];
+        [ivRight setImage:[UIImage imageNamed:@"加减框"]];
+        
+        // 减号
+        UIButton *btnSubtract = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.viewSecond addSubview:btnSubtract];
+        [btnSubtract remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(ivRight.left).offset(7);
+            make.width.height.equalTo(15);
+            make.centerY.equalTo(ivRight.centerY);
+        }];
+        btnSubtract.adjustsImageWhenHighlighted = NO;
+        btnSubtract.tag = 1;
+        [btnSubtract setImage:[UIImage imageNamed:@"减"] forState:UIControlStateNormal];
+        [btnSubtract addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+
+        // 加号
+        UIButton *btnAdd = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.viewSecond addSubview:btnAdd];
+        [btnAdd remakeConstraints:^(MASConstraintMaker *make) {
+            make.right.equalTo(ivRight.right).offset(-7);
+            make.width.height.equalTo(15);
+            make.centerY.equalTo(ivRight.centerY);
+        }];
+        btnAdd.adjustsImageWhenHighlighted = NO;
+        btnAdd.tag = 2;
+        [btnAdd setImage:[UIImage imageNamed:@"加"] forState:UIControlStateNormal];
+        [btnAdd addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.lbCount = [UILabel new];
+        [self.viewSecond addSubview:self.lbCount];
+        [self.lbCount remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(btnSubtract.right);
+            make.right.equalTo(btnAdd.left);
+            make.height.equalTo(20);
+            make.centerY.equalTo(ivRight.centerY);
+        }];
+        self.lbCount.textAlignment = NSTextAlignmentCenter;
+        NSString *strPrintCount = [USER_DEFAULT objectForKey:PRINTCOUNT];
+        if (strPrintCount.length > 0) {
+            self.lbCount.text = strPrintCount;
+        }else{
+            self.lbCount.text = @"1";
+
+        }
+        self.lbCount.textColor = [UIColor colorFromString:@"#999"];
+        
+        UIImageView *ivLine2 = [UIImageView new];
+        [self.viewSecond addSubview:ivLine2];
+        [ivLine2 remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.viewSecond.left).offset(10);
+            make.right.equalTo(self.viewSecond.right).offset(-10);
+            make.height.equalTo(1);
+            make.bottom.equalTo(self.viewSecond.bottom);
+        }];
+        ivLine2.image = [UIImage imageNamed:@"横线"];
+
+    }
+    
+    
+    if (!self.viewThird) {
+        self.viewThird = [UIView new];
+        [self.view addSubview:self.viewThird];
+        [self.viewThird remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.equalTo(self.view);
+            make.height.equalTo(50);
+            make.top.equalTo(self.viewSecond.bottom);
+        }];
+        
+        UIImageView *iv1 = [UIImageView new];
+        [self.viewThird addSubview:iv1];
+        [iv1 remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(15);
+            make.centerY.equalTo(self.viewThird.centerY);
+            make.left.equalTo(self.viewThird.left).offset(10);
+        }];
+        [iv1 setImage:[UIImage imageNamed:@"帮助"]];
+        
+        UILabel *lbTitle = [UILabel new];
+        [self.viewThird addSubview:lbTitle];
+        [lbTitle remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(iv1.right).offset(10);
+            make.centerY.equalTo(iv1.centerY);
+            make.width.greaterThanOrEqualTo(20);
+            make.height.equalTo(20);
+        }];
+        lbTitle.textColor = [UIColor colorFromString:@"#333"];
+        lbTitle.text = @"打印帮助";
+        lbTitle.font = [UIFont systemFontOfSize:14.0];
+        
+        UIImageView *ivRight = [UIImageView new];
+        [self.viewThird addSubview:ivRight];
+        [ivRight remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.height.equalTo(16);
+            make.centerY.equalTo(self.viewThird.centerY);
+            make.right.equalTo(self.viewThird.right).offset(-20);
+        }];
+        [ivRight setImage:[UIImage imageNamed:@"icon_cell_right_arrow"]];
+        
+        UIImageView *ivLine = [UIImageView new];
+        [self.viewThird addSubview:ivLine];
+        [ivLine remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.viewThird.left).offset(10);
+            make.right.equalTo(self.viewThird.right).offset(-10);
+            make.height.equalTo(1);
+            make.bottom.equalTo(self.viewThird.bottom);
+        }];
+        ivLine.image = [UIImage imageNamed:@"横线"];
+        
+        UIButton *btnCoverFirst = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.viewThird addSubview:btnCoverFirst];
+        [btnCoverFirst remakeConstraints:^(MASConstraintMaker *make) {
+            make.left.right.top.bottom.equalTo(self.viewThird);
+        }];
+        btnCoverFirst.tag = 3;
+        [btnCoverFirst addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
+
+}
+
+
+- (void)clickButton:(UIButton *)button{
+    if (button.tag == 0) {
+        // 点击了第一行
+        [self.navigationController pushViewController:[PrinterList new] animated:YES];
+        
+    }else if (button.tag == 1){
+
+        // 点击减号
+        int count = [self.lbCount.text intValue];
+        if (count > 1) {
+            self.lbCount.text = [NSString stringWithFormat:@"%d",count - 1];
+        }else{
+            self.lbCount.text = @"1";
+        }
+        [USER_DEFAULT setObject:self.lbCount.text forKey:PRINTCOUNT];
+        
+    }else if (button.tag == 2){
+        
+        // 点击加号
+        int count = [self.lbCount.text intValue];
+        if (count < 4) {
+            self.lbCount.text = [NSString stringWithFormat:@"%d",count + 1];
+            [USER_DEFAULT setObject:self.lbCount.text forKey:PRINTCOUNT];
+        }
+        
+    }else if (button.tag == 3){
+        
+        [self.navigationController pushViewController:[PrinterHelp new] animated:YES];
+    }
+}
+
+
+@end

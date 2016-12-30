@@ -1,0 +1,81 @@
+//
+//  PrefixHeader.pch
+//  QiShou
+//
+//  Created by WJ on 16/8/3.
+//  Copyright © 2016年 WJ. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <Availability.h>
+
+#import "AppDelegate.h"
+#import "UIView+Exten.h"
+
+#define MAS_SHORTHAND
+#define MAS_SHORTHAND_GLOBALS
+#import "Masonry.h"
+#import "UIBarButtonItem+WJExtension.h"
+#import "UIColor+Utils.h"
+
+
+
+#define POSNAME @"posName"
+#define POSIDENTIFIER @"POSIDENTIFIER"
+#define BLUETOOLSTATE @"blueToolState"
+#define NAME @"Name"
+#define ACCOUNT @"account"
+#define PASSWORD @"passWord"
+#define ISPOWER @"isPower"
+
+#define NOTIFICATION_CENTER [NSNotificationCenter defaultCenter]
+
+#define USER_DEFAULT [NSUserDefaults standardUserDefaults]
+#define RGBCOLOR(r, g, b)  ([UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0])
+
+#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+#define SYSTEM_VERSION [[[UIDevice currentDevice] systemVersion] doubleValue]
+#define WS(weakSelf)  __weak __typeof(&*self)weakSelf = self;
+
+#define ALERT_TITLE(title, msg) [[[UIAlertView alloc] initWithTitle:title message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show]
+
+//状态查询指令值
+#define DLE_EOT_1 1
+#define DLE_EOT_3 3
+#define DLE_EOT_4 4
+
+// 打印是否完成   qzfeng 2015/12/23
+#define DLE_EOT_5 5
+
+//二维条码类型
+#define POS_BT_PDF417       0
+#define POS_BT_DATAMATRIX   1
+#define POS_BT_QRCODE       2
+//一维条码文字位置
+#define POS_BT_HT_NONE      0
+#define POS_BT_HT_UP        1
+#define POS_BT_HT_DOWN      2
+#define POS_BT_HT_BOTH      3
+//一维条码类型
+#define POS_BT_UPCA         65
+#define POS_BT_UPCE         66
+#define POS_BT_JAN13        67
+#define POS_BT_JAN8         68
+#define POS_BT_CODE39       69
+#define POS_BT_ITF          70
+#define POS_BT_CODABAR      71
+#define POS_BT_CODE93       72
+#define POS_BT_CODE128      73
+
+#define BUF_SIZE            8*1024
+#define GET_NUM             100
+
+#import "SPRTPrint.h"
+
+
+
+#endif /* PrefixHeader_pch */

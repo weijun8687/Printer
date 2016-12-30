@@ -1,0 +1,56 @@
+//
+//  PrinterHelp.m
+//  StoreOrder
+//
+//  Created by WJ on 16/8/30.
+//  Copyright © 2016年 WJ. All rights reserved.
+//
+
+#import "PrinterHelp.h"
+
+@interface PrinterHelp ()
+
+@end
+
+@implementation PrinterHelp
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    self.title = @"打印帮助";
+    [self setNavItem];
+    self.view.backgroundColor = [UIColor whiteColor];
+    [self initSubViews];
+    
+}
+
+- (void)setNavItem{
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem itemBackButtonWithTarget:self action:@selector(clickNavItem)];
+}
+
+- (void)clickNavItem{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)initSubViews{
+    UIView *viewGray = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)];
+    [self.view addSubview:viewGray];
+    viewGray.backgroundColor = RGBCOLOR(229, 229, 229);
+    
+    UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"adv"]];
+    CGSize imageSize = [UIImage imageNamed:@"adv"].size;
+    
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+
+    CGRect frame = iv.frame;
+    frame.size.width = SCREEN_WIDTH;
+    frame.origin.y = 10;
+    frame.size.height = imageSize.height * (SCREEN_WIDTH / imageSize.width);
+    iv.frame = frame;
+    iv.backgroundColor = [UIColor blueColor];
+    [self.view addSubview:iv];
+    
+}
+
+@end
